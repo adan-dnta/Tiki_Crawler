@@ -54,7 +54,7 @@ class Category:
       print('ERROR BY INSERT', err)
 
 def get_url(url):
-  time.sleep(1)
+  #time.sleep(1)
   try:
     response = requests.get(url).text
     response = BeautifulSoup(response, 'html.parser')
@@ -111,14 +111,45 @@ def get_all_categories(main_categories):
     if count % 100 == 0:
       print(count, 'times')
 
-create_main_categories()  
-cur.execute(''' INSERT INTO categories (name, url, parent_id)
-                VALUES ('test','test',1);
-          ''')
-print(select_all())
+def select_url():
+  return cur.execute("SELECT url FROM categories WHERE parent_id > 600;").fetchall()
 
-#main_categories = get_main_categories(save_db=True)
-""" data = get_all_categories(main_categories[:2])
+""" def get_content():
+  urls = select_url()
+  list_items = []
+  for url in urls:
+    soup = get_url(url)
+    try:
+      d = {'Name':'', 'Price':'', 'Image':''}
+      for div in soup.find_all('div', {'class':'product-item'}):
+        d['Name'] = div.find('p', {'class':'title'}).text
+        d['Price'] = div.find('span', {'class':'final-price'}).text
+        d['Image'] = div.img['src']
+        list_items.append(d)  
+    except Exception as err:
+        print('ERROR BY GET CONTENT', err)
+  return list_items """
+
+def get_content():
+    soup = get_url('https://tiki.vn/may-rua-chen/c3864?src=c.4221.hamburger_menu_fly_out_banner%27,)%27&_lc=Vk4wMzkwMjEwMDM%3D')
+    list_items=[]
+    try:
+      for div in soup.find_all('div', {'class':'product-item'}):
+        d = {'Name':'', 'Price':'', 'Image':''}
+        d['Name'] = div.img['title']
+        d['Price'] = div.find('span', {'class':'final-price'}).text
+        d['Image'] = div.img['src']
+        list_items.append(d)  
+    except:
+       pass
+    return list_items
+
+create_main_categories()  
+main_categories = get_main_categories(save_db=True)
+
+get_all_categories(main_categories[:2])
+data = get_content()
+print(data)
 
 @app.route('/')
 def index():
@@ -126,4 +157,4 @@ def index():
 
 if __name__ == '__main__':
   app.run(host='0.0.0.0', port=5000, debug=True)
-  """
+ 
