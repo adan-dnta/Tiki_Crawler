@@ -20,7 +20,7 @@ def select_url():
                     ''').fetchall()
 
 def get_url(url):
-  time.sleep(1)
+  # time.sleep(1)
   try:
     response = requests.get(url).text
     response = BeautifulSoup(response, 'html.parser')
@@ -31,23 +31,26 @@ def get_url(url):
 def get_content(save_db = False):
   urls = select_url()
   list_items=[]
+  id = 1
   for url in urls:
     soup = get_url(url[0])
     try:
       for div in soup.find_all('div', {'class':'product-item'}):
-        d = {'Name':'', 'Price':'', 'Image':''}
+        d = {'Id':'', 'Name':'', 'Price':'', 'Image':''}
+        d['Id'] = id
+        id += 1
         d['Name'] = div.a['title']
-        d['Price'] = re.sub('\s\W', '', div.find('span', {'class':'final-price'}).text)
+        d['Price'] = re.sub('-\d+%','',div.find('span', {'class':'final-price'}).text)
         d['Image'] = div.img['src']
-        list_items.append(d)  
+        list_items.append(d)
+        
     except:
        pass
   return list_items
 
 # get content from each url to data
 data = get_content(save_db = True)
-print(data)
-print(type(data))
+
 
 @app.route('/')
 def index():

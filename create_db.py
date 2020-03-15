@@ -116,6 +116,6 @@ create_main_categories()
 # insert main_categories to table
 main_categories = get_main_categories(save_db=True)
 
-# insert sub_categories to table (from first 5 main_categories only)
+# insert sub_categories to table (from first 4 main_categories only)
 get_all_categories(main_categories[:4])
 
