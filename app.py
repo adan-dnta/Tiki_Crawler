@@ -32,16 +32,17 @@ def get_content(save_db = False):
   urls = select_url()
   list_items=[]
   id = 1
-  for url in urls:
+  for url in urls[:200]:
     soup = get_url(url[0])
     try:
       for div in soup.find_all('div', {'class':'product-item'}):
-        d = {'Id':'', 'Name':'', 'Price':'', 'Image':''}
+        d = {'Id':'', 'Name':'', 'Price':'', 'Image':'', 'Link':''}
         d['Id'] = id
         id += 1
         d['Name'] = div.a['title']
         d['Price'] = re.sub('-\d+%','',div.find('span', {'class':'final-price'}).text)
         d['Image'] = div.img['src']
+        d['Link'] = div.a['href']
         list_items.append(d)
         
     except:
@@ -50,7 +51,6 @@ def get_content(save_db = False):
 
 # get content from each url to data
 data = get_content(save_db = True)
-
 
 @app.route('/')
 def index():

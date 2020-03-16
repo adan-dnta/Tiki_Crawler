@@ -9,20 +9,24 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap4.min.css">
- 
+  
   </head>
   <body>
+  <style> tr[data-href]{
+    cursor: pointer;
+    }
+  </style>
     <!-- Jumbotron -->
     <div class="jumbotron jumbotron-fluid">
       <div class="container">
-        <h1 class="display-4">TIKI SEARCH</h1>
+        <h1 class="display-4">TIKI</h1>
       </div>
     </div>
 
     <!-- Table -->
     <div class="container">
-      <table class="table table-bordered table-striped table-hover product_table">
-        <thead>
+      <table class="table table-bordered table-hover product_table">
+        <thead class="thead-dark">
           <tr>
             <th scope="col">ID</th>
             <th scope="col">Name</th>
@@ -32,7 +36,7 @@
         </thead>
         <tbody>
           {% for product in data %}
-          <tr>
+          <tr class='clickable-row' data-href='{{ product["Link"] }}'>
             <th scope="row">{{ product["Id"] }}</th>
             <td>{{ product["Name"] }}</td>
             <td>{{ product["Price"] }}</td>
@@ -51,8 +55,14 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
     <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js"></script>
+    <script> $('.product_table').DataTable();</script>
     <script>
-      $('.product_table').DataTable();
+      jQuery(document).ready(function($) {
+        $(".clickable-row").click(function() {
+            window.location = $(this).data("href");
+          });
+        });
     </script>
+    
   </body>
 </html>
